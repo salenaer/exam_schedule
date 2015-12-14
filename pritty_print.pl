@@ -1,4 +1,5 @@
 :-consult(data/small).
+:-consult(basic).
 
 pritty_print(schedule(Events)):-
 	sort_events(Events, [], SortedEvents),
@@ -7,35 +8,6 @@ pritty_print(schedule(Events)):-
 pritty_print(schedule(Events), Student):-
 	exclude_events(Student, Events, SomeEvents),
 	pritty_print(schedule(SomeEvents)).
-
-
-%------------------------------sorting--------------------------------
-sort_schedule(schedule(Events), SortedEvents):-
-	sort_events(Events, [], SortedEvents).
-
-sort_events([], Itt, Itt).
-sort_events([Event|Events], Itt, SortedEvents):-
-	insert_events(Event, Itt, UpdatedItterator),
-	sort_events(Events, UpdatedItterator, SortedEvents).
-
-insert_events(Event, [], [Event]).
-insert_events(Event, [I|Is], [Event, I|Is]):-
-	event_smaller(Event, I), !.
-insert_events(Event, [I|Is], [I|List]):-
-	insert_events(Event, Is, List).
-
-%is A < B => does A happen before B
-event_smaller(event(_, _, Day1, _), event(_, _, Day2, _)):-
-	Day1<Day2.
-event_smaller(event(_, RID1, Day1, _), event(_, RID2, Day2, _)):-
-	Day1=Day2,
-	RID1@<RID2.
-event_smaller(event(_, RID1, Day1, Start1), event(_, RID2, Day2, Start2)):-
-	Day1=Day2,
-	RID1=RID2,
-	Start1<Start2.
-
-
 
 
 %------------------------------printing--------------------------------

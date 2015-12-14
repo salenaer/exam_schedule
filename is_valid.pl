@@ -1,15 +1,15 @@
 :-consult(data/small).
-%:-consult(data/largeShort).
+%:-consult(data/largeLong).
 :-consult(basic).
 
 :-dynamic exam_with_students/3.
 :-dynamic exam_conflicts/2.
 
 is_valid(schedule(Events)):-
-	%preprocess(),
+	preprocess(),
 	findall(EID, has_exam(_, EID), Exams),
 	is_valid(Events, Exams, []).
-	%retract_preprocess().
+	retract_preprocess().
 
 %is_valid(NotCheckedSchedule, ExamsToSchedule, AlreadyCheckedSchedule)
 is_valid([], [], _).
