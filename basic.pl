@@ -1,7 +1,7 @@
 %:-consult(data/small).
 :-dynamic preprocessed/0.
 
-%----------------abstract functions----------------------------------------------------------
+%----------------generic predicates----------------------------------------------------------
 for_each(_,[]). 
 for_each(F,[A|As]):-  
 	call(F,A),  
@@ -23,10 +23,8 @@ set_of([A|_], List2):-
 set_of([_|As], List2):-
 	set_of(As, List2).
 
-%--------------------------------------sorting-----------------------------------------------------------------------
 
-sort_schedule(schedule(Events), SortedEvents):-
-	sort_events(Events, [], SortedEvents).
+%--------------------------------------sorting-----------------------------------------------------------------------
 
 sort_events([], Itt, Itt).
 sort_events([Event|Events], Itt, SortedEvents):-
@@ -50,7 +48,7 @@ event_smaller(event(_, RID1, Day1, Start1), event(_, RID2, Day2, Start2)):-
 	RID1=RID2,
 	Start1<Start2.
 
-%--------------------------------------domain specific functions------------------------------------------------------
+%--------------------------------------domain specific predicates------------------------------------------------------
 is_end(EID, Start, End):-
 	duration(EID, Duration),
 	End is Start + Duration-1.
@@ -58,6 +56,10 @@ is_end(EID, Start, End):-
 teacher_of_exam(EID, LID):-
 	has_exam(CID, EID),
 	teaches(LID, CID).
+
+student_of_exam(EID, SID):-
+	has_exam(CID, EID),
+	follows(SID, CID).
 
 preprocess:-
 	preprocessed, !. %if flag is set stop 
