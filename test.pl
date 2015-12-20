@@ -1,11 +1,4 @@
-pred1(X, Y):-
-	X > 5,
-	!,
-	Y is 3.
+restrictive_between(Lower, Higher, Value):-
+	Max is Higher - 1,
+	between(Lower, Max, Value).
 
-pred1(_, []).
-
-isLarge(X, 2):-
-	X > 5,!.
-
-isLarge(_, 3).

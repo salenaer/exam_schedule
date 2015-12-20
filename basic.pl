@@ -23,6 +23,17 @@ set_of([A|_], List2):-
 set_of([_|As], List2):-
 	set_of(As, List2).
 
+%between lower higher value => lower <= value < higher
+restrictive_between(Lower, Higher, Value):-
+	Max is Higher - 1,
+	between(Lower, Max, Value).
+
+overlapping(Start1, End1, Start2, End2):-
+	between(Start1, End1, Hour),
+    between(Start2, End2, Hour),
+    !. 
+    %once one hour is between both moments, the moments overlap, no need to check other values
+    %no cut could lead to lots of backtracking
 
 %--------------------------------------sorting-----------------------------------------------------------------------
 
@@ -49,9 +60,13 @@ event_smaller(event(_, RID1, Day1, Start1), event(_, RID2, Day2, Start2)):-
 	Start1<Start2.
 
 %--------------------------------------domain specific predicates------------------------------------------------------
+is_last_hour(EID, Start, LastHour):-
+	duration(EID, Duration),
+	LastHour is Start + Duration-1.
+
 is_end(EID, Start, End):-
 	duration(EID, Duration),
-	End is Start + Duration-1.
+	End is Start + Duration.
 
 teacher_of_exam(EID, LID):-
 	has_exam(CID, EID),
@@ -60,6 +75,11 @@ teacher_of_exam(EID, LID):-
 student_of_exam(EID, SID):-
 	has_exam(CID, EID),
 	follows(SID, CID).
+
+is_on_site(PID, EID):-
+	has_exam(CID, EID),
+    (	follows(PID, CID);
+    	teaches(PID, CID)).
 
 preprocess:-
 	preprocessed, !. %if flag is set stop 

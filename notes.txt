@@ -1,1 +1,4 @@
 sc_lunch_break(PID,Penalty) is deze penalty voor iedereen even groot?
+
+
+om puntjes te vervangen door echte tekst: w

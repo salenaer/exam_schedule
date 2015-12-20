@@ -36,10 +36,12 @@ capacity_match(RID, EID):-
 conflicts(event(EID, RID, Day, Start), [event(EID2, RID2, Day, Start2)|_]):-
 	is_end(EID, Start, End),
 	is_end(EID2, Start2, End2),
-	between(Start, End, Hour),
-	between(Start2, End2, Hour),
-	(RID == RID2;
-		exam_conflicts(EID, EID2)).
+	restrictive_between(Start, End, Hour),
+	restrictive_between(Start2, End2, Hour),
+	(RID == RID2; 
+		exam_conflicts(EID, EID2)). 
 
 conflicts(Event, [_|Events]):-
 	conflicts(Event, Events). 
+
+%small set 9936 valid schedulas
