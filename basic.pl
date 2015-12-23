@@ -1,4 +1,4 @@
-:-module(basic, [for_each/2, delete_first/3, restrictive_between/3, overlapping/4, sort_events/3, is_end/3,
+:-module(basic, [for_each/2, delete_first/3, restrictive_between/3, overlapping/4, sort_events/3, is_end/3, repeat/3,
 				   student_of_exam/2, teacher_of_exam/2, is_on_site/2, preprocess/0, is_conflict/2, retract_preprocess/0]).
 :-dynamic preprocessed/0.
 :-dynamic exam_with_students/3.
@@ -12,10 +12,6 @@ for_each(F,[A|As]):-
 delete_first([Element|List], Element, List):-!. %otherwise prolog will also look for other options
 delete_first([A|List], Element, [A|Out]):-delete_first(List, Element, Out).
 
-gensubset([], []).
-gensubset([A|B], [A|Out]):-gensubset(B, Out).
-gensubset([_|B], Out):-gensubset(B, Out).
-
 element_of(Elem, [Elem|_]):- !.
 element_of(Elem, [_|Tail]):-
 	element_of(Elem, Tail).
@@ -24,6 +20,10 @@ set_of([A|_], List2):-
 	element_of(A, List2), !.
 set_of([_|As], List2):-
 	set_of(As, List2).
+
+repeat(Elem, Lenght, List) :-
+    length(List, Lenght), %create list (every element is prolog undefined variable)
+    maplist(=(Elem), List). %unifie every element to elem
 
 %between lower higher value => lower <= value < higher
 restrictive_between(Lower, Higher, Value):-

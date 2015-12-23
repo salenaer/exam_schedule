@@ -9,6 +9,9 @@ find_optimal(Schedule):-
     basic:retract_preprocess,
     member(Schedule, Best).
 
+is_optimal(Schedule) :-
+	find_optimal(Schedule).
+
 are_best_schedules([], CurrentBest, _, CurrentBest):-!.
 are_best_schedules([Schedule|Schedules], CurrentBest, CurrentCost, Best):-
 	cost_raw(Schedule, Cost),
