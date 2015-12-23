@@ -1,4 +1,4 @@
-:-module(is_valid, [is_valid/1, is_valid_raw/1, good_extension/5]).
+:-module(is_valid, [is_valid/1, is_valid_raw/1, good_extension/5, capacity_match/2]).
 :-use_module(basic).
 
 :-dynamic basic:exam_with_students/3.
@@ -20,7 +20,6 @@ is_valid([event(EID, RID, Day, Start)|Events], Exams, PlannedExams):-
 	is_valid(Events, UpdatedExams, [event(EID, RID, Day, Start)|PlannedExams]).
 
 good_extension(RID, EID, Day, Start, PlannedExams):-
-	room(RID, _),
 	capacity_match(RID, EID),
 	times_match(RID, EID, Day, Start),
 	not(conflicts(event(EID, RID, Day, Start), PlannedExams)).
@@ -33,6 +32,7 @@ times_match(RID, EID, Day, Start):-
 	Duration =< RoomFree.
 
 capacity_match(RID, EID):-
+	room(RID, _),
 	capacity(RID, RoomCapacity),
 	basic:exam_with_students(EID, _, NumberOfStudents),
 	RoomCapacity >= NumberOfStudents.
