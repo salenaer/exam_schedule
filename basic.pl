@@ -1,4 +1,3 @@
-%:-consult(data/small).
 :-dynamic preprocessed/0.
 
 %----------------generic predicates----------------------------------------------------------
@@ -29,8 +28,8 @@ restrictive_between(Lower, Higher, Value):-
 	between(Lower, Max, Value).
 
 overlapping(Start1, End1, Start2, End2):-
-	between(Start1, End1, Hour),
-    between(Start2, End2, Hour),
+	restrictive_between(Start1, End1, Hour),
+    restrictive_between(Start2, End2, Hour),
     !. 
     %once one hour is between both moments, the moments overlap, no need to check other values
     %no cut could lead to lots of backtracking
@@ -42,9 +41,10 @@ sort_events([Event|Events], Itt, SortedEvents):-
 	insert_events(Event, Itt, UpdatedItterator),
 	sort_events(Events, UpdatedItterator, SortedEvents).
 
-insert_events(Event, [], [Event]).
+insert_events(Event, [], [Event]):-!. %cut here to prevent trying other branches
 insert_events(Event, [I|Is], [Event, I|Is]):-
-	event_smaller(Event, I), !.
+	event_smaller(Event, I), 
+	!.
 insert_events(Event, [I|Is], [I|List]):-
 	insert_events(Event, Is, List).
 
