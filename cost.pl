@@ -58,5 +58,3 @@ increase_cost(PID, StudentItt, LecturerItt, Penalty, NewStudentItt, LecturerItt)
 increase_cost(PID, StudentItt, LecturerItt, Penalty, StudentItt, NewLecturerItt):-
 	lecturer(PID, _),
 	NewLecturerItt is LecturerItt + Penalty.
-Status API Training Shop Blog About Pricing
-© 2015 GitHub, Inc. Terms Privacy Security Contact Help
