@@ -1,15 +1,16 @@
-:-consult(data/small).
-%:-consult(data/largeLong).
 :-consult(basic).
 
 :-dynamic exam_with_students/3.
 :-dynamic exam_conflicts/2.
 
-is_valid(schedule(Events)):-
+is_valid(Schedule):-
 	preprocess(),
+	is_valid_raw(Schedule),
+	retract_preprocess.
+
+is_valid_raw(schedule(Events)):-
 	findall(EID, has_exam(_, EID), Exams),
 	is_valid(Events, Exams, []).
-	retract_preprocess().
 
 %is_valid(NotCheckedSchedule, ExamsToSchedule, AlreadyCheckedSchedule)
 is_valid([], [], _).
@@ -36,10 +37,9 @@ capacity_match(RID, EID):-
 conflicts(event(EID, RID, Day, Start), [event(EID2, RID2, Day, Start2)|_]):-
 	is_end(EID, Start, End),
 	is_end(EID2, Start2, End2),
-	restrictive_between(Start, End, Hour),
-	restrictive_between(Start2, End2, Hour),
+	overlapping(Start, End, Start2, End2),
 	(RID == RID2; 
-		exam_conflicts(EID, EID2)). 
+		exam_conflicts(EID, EID2)).
 
 conflicts(Event, [_|Events]):-
 	conflicts(Event, Events). 

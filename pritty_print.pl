@@ -1,4 +1,3 @@
-:-consult(data/small).
 :-consult(basic).
 
 pritty_print(schedule(Events)):-

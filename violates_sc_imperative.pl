@@ -1,5 +1,4 @@
 :-consult(basic).
-:-consult(data/small).
 
 :-dynamic exam_with_students/3.
 
