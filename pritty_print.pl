@@ -1,4 +1,5 @@
-:-consult(basic).
+:-module(pritty_print, [pritty_print/1, pritty_print/2]).
+:-use_module(basic).
 
 pritty_print(schedule(Events)):-
 	sort_events(Events, [], SortedEvents),

@@ -1,12 +1,12 @@
-:-consult(basic).
+:-module(is_valid, [is_valid/1, is_valid_raw/1]).
+:-use_module(basic).
 
-:-dynamic exam_with_students/3.
-:-dynamic exam_conflicts/2.
+:-dynamic basic:exam_with_students/3.
+:-dynamic basic:exam_conflicts/2.
 
 is_valid(Schedule):-
-	preprocess(),
-	is_valid_raw(Schedule),
-	retract_preprocess.
+	basic:preprocess,
+	is_valid_raw(Schedule).
 
 is_valid_raw(schedule(Events)):-
 	findall(EID, has_exam(_, EID), Exams),
@@ -31,7 +31,7 @@ times_match(RID, EID, Day, Start):-
 
 capacity_match(RID, EID):-
 	capacity(RID, RoomCapacity),
-	exam_with_students(EID, _, NumberOfStudents),
+	basic:exam_with_students(EID, _, NumberOfStudents),
 	RoomCapacity >= NumberOfStudents.
 
 conflicts(event(EID, RID, Day, Start), [event(EID2, RID2, Day, Start2)|_]):-
@@ -39,9 +39,10 @@ conflicts(event(EID, RID, Day, Start), [event(EID2, RID2, Day, Start2)|_]):-
 	is_end(EID2, Start2, End2),
 	overlapping(Start, End, Start2, End2),
 	(RID == RID2; 
-		exam_conflicts(EID, EID2)).
+		basic:exam_conflicts(EID, EID2)).
 
 conflicts(Event, [_|Events]):-
 	conflicts(Event, Events). 
 
+%findall(X, is_valid(X), List), length(List, Length).
 %small set 9936 valid schedulas

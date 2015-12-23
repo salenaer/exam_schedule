@@ -1,4 +1,7 @@
+:-module(basic, [for_each/2, delete_first/3, restrictive_between/3, overlapping/4, sort_events/3, is_end/3,
+				   student_of_exam/2, teacher_of_exam/2, is_on_site/2, preprocess/0, is_conflict/2, retract_preprocess/0]).
 :-dynamic preprocessed/0.
+:-dynamic exam_with_students/3.
 
 %----------------generic predicates----------------------------------------------------------
 for_each(_,[]). 
@@ -60,10 +63,6 @@ event_smaller(event(_, RID1, Day1, Start1), event(_, RID2, Day2, Start2)):-
 	Start1<Start2.
 
 %--------------------------------------domain specific predicates------------------------------------------------------
-is_last_hour(EID, Start, LastHour):-
-	duration(EID, Duration),
-	LastHour is Start + Duration-1.
-
 is_end(EID, Start, End):-
 	duration(EID, Duration),
 	End is Start + Duration.

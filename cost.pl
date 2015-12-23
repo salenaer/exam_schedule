@@ -1,11 +1,11 @@
-:-consult(basic).
-:-consult(violates_sc).
-
+:-module(cost, [cost/2, cost_raw/2]).
+:-use_module(basic).
+:-use_module(violates_sc, [violates_sc_raw/2]).
 
 cost(Schedule,Cost):-
-	preprocess,
+	basic:preprocess,
 	cost_raw(Schedule,Cost),
-	retract_preprocess.
+	basic:retract_preprocess.
 
 cost_raw(Schedule,Cost):-
 	violates_sc_raw(Schedule, Violations),

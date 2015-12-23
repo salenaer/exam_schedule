@@ -1,6 +1,7 @@
-:-consult(basic).
+:-module(violates_sc, [violates_sc/2, violates_sc_raw/2]).
+:-use_module(basic).
 
-:-dynamic exam_with_students/3.
+:-dynamic basic:exam_with_students/3.
 :-dynamic events_asserted/0.
 :-dynamic event/5.
 

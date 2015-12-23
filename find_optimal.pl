@@ -1,11 +1,12 @@
-:-consult(is_valid).
-:-consult(cost).
+:-module(find_optimal, [find_optimal/1]).
+:-use_module(is_valid, [is_valid_raw/1]).
+:-use_module(cost, [cost_raw/2]).
 
 find_optimal(Schedule):-
-	preprocess,
+	basic:preprocess,
 	findall(X, is_valid_raw(X), List),
 	are_best_schedules(List, [], 9001, Best),
-    retract_preprocess,
+    basic:retract_preprocess,
     member(Schedule, Best).
 
 are_best_schedules([], CurrentBest, _, CurrentBest):-!.
