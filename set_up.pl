@@ -6,7 +6,8 @@ setup_largeLong:-consult(data/largeLong),
 				 setup_files.
 
 setup_files:-use_module(is_valid),
-			 use_module(pritty_print),
+			 use_module(pretty_print),
 			 use_module(violates_sc),
 			 use_module(cost),
-			 use_module(find_optimal).
+			 use_module(find_optimal),
+			 use_module(find_heuristically).

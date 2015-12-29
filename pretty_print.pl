@@ -1,13 +1,13 @@
-:-module(pritty_print, [pritty_print/1, pritty_print/2]).
+:-module(pretty_print, [pretty_print/1, pretty_print/2]).
 :-use_module(basic).
 
-pritty_print(schedule(Events)):-
+pretty_print(schedule(Events)):-
 	sort_events(Events, [], SortedEvents),
 	print_events(SortedEvents).
 
-pritty_print(schedule(Events), Student):-
+pretty_print(schedule(Events), Student):-
 	exclude_events(Student, Events, SomeEvents),
-	pritty_print(schedule(SomeEvents)).
+	pretty_print(schedule(SomeEvents)).
 
 
 %------------------------------printing--------------------------------
