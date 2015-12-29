@@ -1,14 +1,17 @@
-:-module(is_valid, [is_valid/1, is_valid_raw/1, good_extension/5, capacity_match/2]).
+%Sander Lenaerts
+%29/12/2015
+%generate valid schedules
+%warning!!! does not retract preprocessed data
+
+:-module(is_valid, [is_valid/1, good_extension/5, capacity_match/2]).
 :-use_module(basic).
 
 :-dynamic basic:exam_with_students/3.
 :-dynamic basic:exam_conflicts/2.
 
-is_valid(Schedule):-
+% is_valid(?Schedule)
+is_valid(schedule(Events)):-
 	basic:preprocess,
-	is_valid_raw(Schedule).
-
-is_valid_raw(schedule(Events)):-
 	findall(EID, has_exam(_, EID), Exams),
 	is_valid(Events, Exams, []).
 

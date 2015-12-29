@@ -7,7 +7,7 @@
 
 violates_sc(schedule(Events), SoftConstraints):-
     assert_events(Events),
-    sort_events(Events, [], SortedEvents),
+    sort_events(Events, SortedEvents),
     lunch_break_violations(Lunch_break_violations),
     no_exam_in_period_violations(No_exam_in_period_violations),
     not_in_period_violations(Not_in_period_violations),

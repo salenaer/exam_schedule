@@ -2,7 +2,7 @@
 :-use_module(basic).
 
 pretty_print(schedule(Events)):-
-	sort_events(Events, [], SortedEvents),
+	sort_events(Events, SortedEvents),
 	print_events(SortedEvents).
 
 pretty_print(schedule(Events), Student):-

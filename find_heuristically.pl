@@ -1,22 +1,34 @@
+%Sander Lenaerts
+%29/12/2015
+%problem is NP hard making it impossible to brute force on large instances
+%use heuristic to direct search
+
 :-module(find_heuristically, [find_heuristically/2, find_heuristically/1]).
-:-use_module(is_valid, [is_valid_raw/1]).
+:-use_module(is_valid, [is_valid/1]).
 :-use_module(cost, [cost/2]).
 
 :-dynamic exams/1.
 
+%find_heuristically(-Schedule)
+%default search takes around 120 seconds
 find_heuristically(Schedule):-
 	find_heuristically(Schedule, 80).
 
+%find_heuristically(-Schedule, +Time)
+%search for the optimal schedule for Time seconds
 find_heuristically(Schedule, Time):-
 	 get_time(StartTime),
 	 basic:preprocess,
 	 EndTime is StartTime + Time,
-	 is_valid:is_valid_raw(StartingSchedule), %find one valid schedule
+	 is_valid:is_valid(StartingSchedule), %find one valid schedule
 	 cost:cost(StartingSchedule, Cost),
 	 is_improvement([gradedSchedule(StartingSchedule, Cost)], [Schedule:_], EndTime),
 	 !, %backtracking would return an endless loop
 	 basic:retract_preprocess.
 
+%is_improvement(+Schedule, -HeuriticallyOptimalSchedule, +Time)
+%If time is up return the current schedule
+%otherwise improve the current schedules and loop.
 is_improvement(Current, Current, EndTime):-
 	get_time(Now),
 	Now > EndTime,
