@@ -1,8 +1,11 @@
-:-module(find_heuristically, [find_heuristically/2, randomish/2]).
+:-module(find_heuristically, [find_heuristically/2, find_heuristically/1]).
 :-use_module(is_valid, [is_valid_raw/1]).
 :-use_module(cost, [cost/2]).
 
 :-dynamic exams/1.
+
+find_heuristically(Schedule):-
+	find_heuristically(Schedule, 80).
 
 find_heuristically(Schedule, Time):-
 	 get_time(StartTime),
@@ -10,7 +13,8 @@ find_heuristically(Schedule, Time):-
 	 EndTime is StartTime + Time,
 	 is_valid:is_valid_raw(StartingSchedule), %find one valid schedule
 	 cost:cost(StartingSchedule, Cost),
-	 is_improvement([weightedSchedule(StartingSchedule, Cost)], Schedule, EndTime),
+	 is_improvement([gradedSchedule(StartingSchedule, Cost)], [Schedule:_], EndTime),
+	 !, %backtracking would return an endless loop
 	 basic:retract_preprocess.
 
 is_improvement(Current, Current, EndTime):-
@@ -24,10 +28,10 @@ is_improvement(Current, List, EndTime):-
 	is_improvement(NewBest, List, EndTime).
 
 %------------------------------------store only k best ---------------------------------------------
-smaller(weightedSchedule(Schedule1, Cost1), weightedSchedule(_, Cost2), weightedSchedule(Schedule1, Cost1)):-
+smaller(gradedSchedule(Schedule1, Cost1), gradedSchedule(_, Cost2), gradedSchedule(Schedule1, Cost1)):-
 	Cost1 < Cost2.
 
-smaller(weightedSchedule(_, Cost1), weightedSchedule(Schedule2, Cost2), weightedSchedule(Schedule2, Cost2)):-
+smaller(gradedSchedule(_, Cost1), gradedSchedule(Schedule2, Cost2), gradedSchedule(Schedule2, Cost2)):-
 	Cost1 >= Cost2.
 
 %only keep the 10 largest in the set
@@ -45,10 +49,8 @@ insert(Element, [WeightedNew|WeightedNews], [Schedule|Schedules], [Schedule|Rest
 	insert(NewElement, [WeightedNew|WeightedNews], Schedules, Rest).	
 
 map_cost([], []):-!.
-map_cost([Schedule|Schedules], [weightedSchedule(Schedule, Cost)|Rest]):-
+map_cost([Schedule|Schedules], [gradedSchedule(Schedule, Cost)|Rest]):-
 	cost(Schedule, Cost),
-	print(Cost),
-	write("\n"),
 	map_cost(Schedules, Rest).
 
 new_best(Schedules, NewSchedules, Best):-
@@ -57,24 +59,25 @@ new_best(Schedules, NewSchedules, Best):-
 	insert(0, NewSortedWeighted, Schedules, Best).
 
 %--------------------------------improve schedule --------------------------------------------------
-randomish(weightedSchedule(schedule(Events), _), schedule([event(EID, RID2, Day, Start)|ScheduledEvents])):-
+randomish(gradedSchedule(schedule(Events), _), schedule([event(EID, RID, Day, Start)|ScheduledEvents])):-
 	random_permutation(Events, RandomEvents),
 	basic:delete_first(RandomEvents, Event, ScheduledEvents),
 	randomize_event(Event, event(EID, RID, Day, Start)),
-	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents).
+	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents),
+	!.
 
-randomize_event(event(EID, RID, Day, Start), event(EID, RID, Day2, Start2)):-
+randomize_event(event(EID, RID, Day, Start), event(EID, RID2, Day2, Start2)):-
 	first_day(FirstDay),
 	last_day(LastDay),
 	findall(Days, between(FirstDay, LastDay, Days), PossibleDays),
 	random_permutation(PossibleDays, RandomDays), %source of randomness (member will always take the first day from the list first)
 	member(Day2, RandomDays), %pick some day at random from the list
-	availability(RID2, Day2, StartHour, EndHour), % choose a room that is available on this day
+	availability(RID2, Day2, From, Till), % choose a room that is available on this day
 	duration(EID, Duration),
-	LastPossibleStartingHour is EndHour - Duration, 
-	findall(Hour, between(StartHour, LastPossibleStartingHour, Hour), Hours),
-	random_permutation(Hours, HourPermutation),
-	member(Start2, HourPermutation),
-	(Day =\= Day2; Start =\= Start2).
+	LastPossibleStartingHour is Till - Duration, 
+	findall(Hour, between(From, LastPossibleStartingHour, Hour), PossibleHourss),
+	random_permutation(PossibleHourss, RandomHours),
+	member(Start2, RandomHours),
+	(Day \== Day2; Start \== Start2; RID \== RID2).
 
-%randomish( weightedSchedule(schedule([event(e1, r2, 1, 10), event(e2, r2, 2, 10), event(e3, r1, 3, 10), event(e4, r1, 3, 12), event(e5, r2, 4, 10)]), 4.5), X).
+%randomish( gradedSchedule(schedule([event(e1, r2, 1, 10), event(e2, r2, 2, 10), event(e3, r1, 3, 10), event(e4, r1, 3, 12), event(e5, r2, 4, 10)]), 4.5), X).
