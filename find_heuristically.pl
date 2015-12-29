@@ -22,8 +22,7 @@ find_heuristically(Schedule, Time):-
 	 EndTime is StartTime + Time,
 	 is_valid:is_valid(StartingSchedule), %find one valid schedule
 	 cost:cost(StartingSchedule, Cost),
-	 is_improvement([gradedSchedule(StartingSchedule, Cost)], [Schedule:_], EndTime),
-	 !, %backtracking would return an endless loop
+	 is_improvement([gradedSchedule(StartingSchedule, Cost)], Schedule, EndTime),
 	 basic:retract_preprocess.
 
 %is_improvement(+Schedule, -HeuriticallyOptimalSchedule, +Time)
@@ -75,8 +74,7 @@ randomish(gradedSchedule(schedule(Events), _), schedule([event(EID, RID, Day, St
 	random_permutation(Events, RandomEvents),
 	basic:delete_first(RandomEvents, Event, ScheduledEvents),
 	randomize_event(Event, event(EID, RID, Day, Start)),
-	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents),
-	!.
+	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents).
 
 randomize_event(event(EID, RID, Day, Start), event(EID, RID2, Day2, Start2)):-
 	first_day(FirstDay),
@@ -87,9 +85,7 @@ randomize_event(event(EID, RID, Day, Start), event(EID, RID2, Day2, Start2)):-
 	availability(RID2, Day2, From, Till), % choose a room that is available on this day
 	duration(EID, Duration),
 	LastPossibleStartingHour is Till - Duration, 
-	findall(Hour, between(From, LastPossibleStartingHour, Hour), PossibleHourss),
-	random_permutation(PossibleHourss, RandomHours),
+	findall(Hour, between(From, LastPossibleStartingHour, Hour), PossibleHours),
+	random_permutation(PossibleHours, RandomHours),
 	member(Start2, RandomHours),
 	(Day \== Day2; Start \== Start2; RID \== RID2).
-
-%randomish( gradedSchedule(schedule([event(e1, r2, 1, 10), event(e2, r2, 2, 10), event(e3, r1, 3, 10), event(e4, r1, 3, 12), event(e5, r2, 4, 10)]), 4.5), X).

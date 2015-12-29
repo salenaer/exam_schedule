@@ -1,14 +1,20 @@
+%Sander Lenaerts
+%29/12/2015
+%prints schedules if human readable formats
+
 :-module(pretty_print, [pretty_print/1, pretty_print/2]).
 :-use_module(basic).
 
+%pretty_print(+Schedule)
 pretty_print(schedule(Events)):-
 	sort_events(Events, SortedEvents),
 	print_events(SortedEvents).
 
+%pretty_print(+Schedule, +Student)
+%print only exams whom student follows
 pretty_print(schedule(Events), Student):-
 	exclude_events(Student, Events, SomeEvents),
 	pretty_print(schedule(SomeEvents)).
-
 
 %------------------------------printing--------------------------------
 print_events([]).
@@ -18,6 +24,10 @@ print_events([event(EID, RID, Day, Start)|Events]):-
 	print_event(EID, Start),
 	print_events(Events, Day, RID).
 
+%print-loop
+%day and room same => print exam
+%day same => print room and exam
+%nothing same => print day, room and exam
 print_events([], _, _).
 print_events([event(EID, RID, Day, Start)|Events], Day, RID):-
 	print_event(EID, Start),
@@ -68,7 +78,6 @@ print_event(EID, Start):-
 
 %------------------------------excluding--------------------------------
 exclude_events(_, [], []).
-
 exclude_events(SID, [event(EID, RID,Day,Start)|Events], [event(EID, RID,Day,Start)|SomeEvents]):-
 	has_exam(CID, EID),
 	follows(SID, CID),
