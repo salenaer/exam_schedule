@@ -1,5 +1,6 @@
 :-module(basic, [for_each/2, delete_first/3, restrictive_between/3, overlapping/4, sort_events/3, is_end/3, repeat/3,
-				   student_of_exam/2, teacher_of_exam/2, is_on_site/2, preprocess/0, is_conflict/2, retract_preprocess/0]).
+				   student_of_exam/2, teacher_of_exam/2, is_on_site/2, preprocess/0, is_conflict/2, retract_preprocess/0,
+				   full_cleanup/0]).
 :-dynamic preprocessed/0.
 :-dynamic exam_with_students/3.
 
@@ -124,6 +125,13 @@ retract_preprocess:-
 	retractall(exam_conflicts(_,_)),
 	retractall(exam_with_students(_,_,_)),
 	retract(preprocessed).
+
+full_cleanup:-
+	(	retractall(event(_,_,_,_,_)),
+		retract(events_asserted),
+		retract_preprocess);
+	retract_preprocess.
+	
 
 
 %  bagof(Y, exam_conflicts(Exam,Y), List).
