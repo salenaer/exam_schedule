@@ -1,7 +1,7 @@
 %Sander Lenaerts
 %29/12/2015
 %problem is NP hard making it impossible to brute force on large instances
-%use heuristic to direct search
+%use hill climbing to try a find optimal schedule
 
 :-module(find_heuristically, [find_heuristically/2, find_heuristically/1]).
 :-use_module(is_valid, [is_valid/1]).
@@ -74,7 +74,8 @@ randomish(gradedSchedule(schedule(Events), _), schedule([event(EID, RID, Day, St
 	random_permutation(Events, RandomEvents),
 	basic:delete_first(RandomEvents, Event, ScheduledEvents),
 	randomize_event(Event, event(EID, RID, Day, Start)),
-	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents).
+	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents),
+	!.
 
 randomize_event(event(EID, RID, Day, Start), event(EID, RID2, Day2, Start2)):-
 	first_day(FirstDay),
