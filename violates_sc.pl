@@ -1,16 +1,11 @@
-:-module(violates_sc, [violates_sc/2, violates_sc_raw/2]).
+:-module(violates_sc, [violates_sc/2]).
 :-use_module(basic).
 
 :-dynamic basic:exam_with_students/3.
 :-dynamic events_asserted/0.
 :-dynamic event/5.
 
-violates_sc(Schedule, SoftConstraints):-
-    preprocess,
-    violates_sc_raw(Schedule, SoftConstraints),
-    retract_preprocess.
-
-violates_sc_raw(schedule(Events), SoftConstraints):-
+violates_sc(schedule(Events), SoftConstraints):-
     assert_events(Events),
     sort_events(Events, [], SortedEvents),
     lunch_break_violations(Lunch_break_violations),
@@ -50,7 +45,6 @@ lunch_break_violations(SoftConstraints):-
             SoftConstraints).
 
 %------------------------not in period and no exam in period--------------------------
-
 
 no_exam_in_period_violations(SoftConstraints):-
     findall(sc_no_exam_in_period(LID,EID,Day, From,Till,Penalty),

@@ -1,6 +1,6 @@
 :-module(find_heuristically, [find_heuristically/2, randomish/2]).
 :-use_module(is_valid, [is_valid_raw/1]).
-:-use_module(cost, [cost_raw/2]).
+:-use_module(cost, [cost/2]).
 
 :-dynamic exams/1.
 
@@ -9,7 +9,7 @@ find_heuristically(Schedule, Time):-
 	 basic:preprocess,
 	 EndTime is StartTime + Time,
 	 is_valid:is_valid_raw(StartingSchedule), %find one valid schedule
-	 cost:cost_raw(StartingSchedule, Cost),
+	 cost:cost(StartingSchedule, Cost),
 	 is_improvement([weightedSchedule(StartingSchedule, Cost)], Schedule, EndTime),
 	 basic:retract_preprocess.
 
@@ -46,7 +46,7 @@ insert(Element, [WeightedNew|WeightedNews], [Schedule|Schedules], [Schedule|Rest
 
 map_cost([], []):-!.
 map_cost([Schedule|Schedules], [weightedSchedule(Schedule, Cost)|Rest]):-
-	cost_raw(Schedule, Cost),
+	cost(Schedule, Cost),
 	print(Cost),
 	write("\n"),
 	map_cost(Schedules, Rest).

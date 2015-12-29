@@ -1,14 +1,9 @@
-:-module(cost, [cost/2, cost_raw/2]).
+:-module(cost, [cost/2]).
 :-use_module(basic).
-:-use_module(violates_sc, [violates_sc_raw/2]).
+:-use_module(violates_sc, [violates_sc/2]).
 
 cost(Schedule,Cost):-
-	basic:preprocess,
-	cost_raw(Schedule,Cost),
-	basic:retract_preprocess.
-
-cost_raw(Schedule,Cost):-
-	violates_sc_raw(Schedule, Violations),
+	violates_sc(Schedule, Violations),
 	get_cost(Violations, 0, 0, Cost).
 
 get_cost([], StudentItt, LecturerItt, Cost):-

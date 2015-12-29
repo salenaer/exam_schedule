@@ -1,6 +1,6 @@
 :-module(find_optimal, [find_optimal/1]).
 :-use_module(is_valid, [is_valid_raw/1]).
-:-use_module(cost, [cost_raw/2]).
+:-use_module(cost, [cost/2]).
 
 find_optimal(Schedule):-
 	basic:preprocess,
@@ -14,7 +14,7 @@ is_optimal(Schedule) :-
 
 are_best_schedules([], CurrentBest, _, CurrentBest):-!.
 are_best_schedules([Schedule|Schedules], CurrentBest, CurrentCost, Best):-
-	cost_raw(Schedule, Cost),
+	cost(Schedule, Cost),
 	next_step(Cost, Schedule, Schedules, CurrentBest, CurrentCost, Best).
 
 next_step(Cost, Schedule, Schedules, _, CurrentCost, Best):-
