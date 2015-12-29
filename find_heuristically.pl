@@ -57,22 +57,22 @@ new_best(Schedules, NewSchedules, Best):-
 	insert(0, NewSortedWeighted, Schedules, Best).
 
 %--------------------------------improve schedule --------------------------------------------------
-randomish(weightedSchedule(schedule(Events), _), schedule([event(EID, RID, Day, Start)|ScheduledEvents])):-
+randomish(weightedSchedule(schedule(Events), _), schedule([event(EID, RID2, Day, Start)|ScheduledEvents])):-
 	random_permutation(Events, RandomEvents),
 	basic:delete_first(RandomEvents, Event, ScheduledEvents),
-	mutate_event(Event, event(EID, RID, Day, Start)),
+	randomize_event(Event, event(EID, RID, Day, Start)),
 	is_valid:good_extension(RID, EID, Day, Start, ScheduledEvents).
 
-mutate_event(event(EID, RID, Day, Start), event(EID, RID, Day2, Start2)):-
+randomize_event(event(EID, RID, Day, Start), event(EID, RID, Day2, Start2)):-
 	first_day(FirstDay),
 	last_day(LastDay),
-	findall(Days, between(FirstDay, LastDay, Days), Range),
-	random_permutation(Range, DayPermutation),
-	member(Day2, DayPermutation),
-	availability(RID, Day2, StartHour, EndHour),
+	findall(Days, between(FirstDay, LastDay, Days), PossibleDays),
+	random_permutation(PossibleDays, RandomDays), %source of randomness (member will always take the first day from the list first)
+	member(Day2, RandomDays), %pick some day at random from the list
+	availability(RID2, Day2, StartHour, EndHour), % choose a room that is available on this day
 	duration(EID, Duration),
-	Max is EndHour - Duration,
-	findall(Hour, between(StartHour, Max, Hour), Hours),
+	LastPossibleStartingHour is EndHour - Duration, 
+	findall(Hour, between(StartHour, LastPossibleStartingHour, Hour), Hours),
 	random_permutation(Hours, HourPermutation),
 	member(Start2, HourPermutation),
 	(Day =\= Day2; Start =\= Start2).

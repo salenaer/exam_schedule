@@ -27,9 +27,8 @@ good_extension(RID, EID, Day, Start, PlannedExams):-
 times_match(RID, EID, Day, Start):-
 	duration(EID, Duration),
 	availability(RID,Day,From,Till),
-	between(From, Till, Start),
-	RoomFree is Till - Start,
-	Duration =< RoomFree.
+	LastPossibleStartingHour is Till - Duration, 
+	between(From, LastPossibleStartingHour, Start).
 
 capacity_match(RID, EID):-
 	room(RID, _),
