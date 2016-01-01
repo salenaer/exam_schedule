@@ -5,7 +5,7 @@
 % 		calculating their cost 
 % 		picking the smallest onces
 
-:-module(find_optimal, [find_optimal/1]).
+:-module(find_optimal, [find_optimal/1, is_optimal/1]).
 :-use_module(is_valid, [is_valid/1]).
 :-use_module(cost, [cost/2]).
 

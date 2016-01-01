@@ -1,3 +1,7 @@
+%Sander Lenaerts
+%29/12/2015
+%calculates all broken soft constraints for given valid schedule
+
 :-module(violates_sc, [violates_sc/2]).
 :-use_module(basic).
 

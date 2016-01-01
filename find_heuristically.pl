@@ -16,13 +16,15 @@ find_heuristically(Schedule):-
 
 %find_heuristically(-Schedule, +Time)
 %search for the optimal schedule for Time seconds
+%if you want the schedule together with the cost switch comment wiht uncomment lines 26-27
 find_heuristically(Schedule, Time):-
 	 get_time(StartTime),
 	 basic:preprocess,
 	 EndTime is StartTime + Time,
 	 is_valid:is_valid(StartingSchedule), %find one valid schedule
 	 cost:cost(StartingSchedule, Cost),
-	 is_improvement([gradedSchedule(StartingSchedule, Cost)], Schedule, EndTime),
+	 is_improvement([gradedSchedule(StartingSchedule, Cost)], [gradedSchedule(Schedule, _)|_], EndTime),
+	 %is_improvement([gradedSchedule(StartingSchedule, Cost)], [Schedule|_], EndTime), 
 	 basic:retract_preprocess.
 
 %is_improvement(+Schedule, -HeuriticallyOptimalSchedule, +Time)

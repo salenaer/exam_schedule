@@ -1,6 +1,6 @@
 %Sander Lenaerts
 %29/12/2015
-%prints schedules if human readable formats
+%prints schedules in human readable format
 
 :-module(pretty_print, [pretty_print/1, pretty_print/2]).
 :-use_module(basic).

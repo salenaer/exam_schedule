@@ -3,7 +3,7 @@
 %predicate generates all possible valid schedules
 %warning!!! does not retract preprocessed data
 
-:-module(is_valid, [is_valid/1, good_extension/5, capacity_match/2]).
+:-module(is_valid, [is_valid/1, good_extension/5]).
 :-use_module(basic).
 
 :-dynamic basic:exam_with_students/3.
